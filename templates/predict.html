@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}Heart Disease Prediction - CardioPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .prediction-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-header h1 {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+
+    .prediction-form {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .form-section h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 2rem;
+        margin-top: 0.5rem;
+    }
+
+    .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .radio-option input[type="radio"] {
+        width: auto;
+        margin: 0;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .info-tooltip {
+        display: inline-block;
+        margin-left: 0.5rem;
+        color: var(--gray);
+        cursor: help;
+    }
+
+    .helper-text {
+        font-size: 0.875rem;
+        color: var(--gray);
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .prediction-form {
+            padding: 2rem 1.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="prediction-container">
+    <div class="form-header">
+        <h1><i class="fas fa-heartbeat"></i> Health Assessment</h1>
+        <p>Enter your health information for cardiovascular risk prediction</p>
+    </div>
+
+    <form class="prediction-form" method="POST" action="/predict">
+        <div class="form-section">
+            <h3><i class="fas fa-user"></i> Personal Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="age">Age (years) <span class="info-tooltip" title="Your current age">ℹ️</span></label>
+                    <input type="number" id="age" name="age" required min="20" max="100" placeholder="e.g., 45">
+                    <div class="helper-text">Must be between 20-100 years</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="1">Female</option>
+                        <option value="2">Male</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="height">Height (cm)</label>
+                    <input type="number" id="height" name="height" required min="120" max="220" step="0.1" placeholder="e.g., 175">
+                    <div class="helper-text">Must be between 120-220 cm</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" name="weight" required min="30" max="200" step="0.1" placeholder="e.g., 75">
+                    <div class="helper-text">Must be between 30-200 kg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-heartbeat"></i> Blood Pressure</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ap_hi">Systolic BP (mmHg)</label>
+                    <input type="number" id="ap_hi" name="ap_hi" required min="90" max="250" placeholder="e.g., 120">
+                    <div class="helper-text">Normal: 90-120 mmHg</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ap_lo">Diastolic BP (mmHg)</label>
+                    <input type="number" id="ap_lo" name="ap_lo" required min="60" max="200" placeholder="e.g., 80">
+                    <div class="helper-text">Normal: 60-80 mmHg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-vial"></i> Medical Tests</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cholesterol">Cholesterol Level</label>
+                    <select id="cholesterol" name="cholesterol" required>
+                        <option value="">Select Level</option>
+                        <option value="1">Normal</option>
+                        <option value="2">Above Normal</option>
+                        <option value="3">Well Above Normal</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gluc">Glucose Level</label>
+                    <select id="gluc" name="gluc" required>
+                        <option value="">Select Level</option>
+                        <option value="1">Normal</option>
+                        <option value="2">Above Normal</option>
+                        <option value="3">Well Above Normal</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-running"></i> Lifestyle Factors</h3>
+            
+            <div class="form-group">
+                <label>Do you smoke?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="smoke_no" name="smoke" value="0" required>
+                        <label for="smoke_no">No</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="smoke_yes" name="smoke" value="1">
+                        <label for="smoke_yes">Yes</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you consume alcohol?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="alco_no" name="alco" value="0" required>
+                        <label for="alco_no">No</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="alco_yes" name="alco" value="1">
+                        <label for="alco_yes">Yes</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Are you physically active?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="active_yes" name="active" value="1" required>
+                        <label for="active_yes">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="active_no" name="active" value="0">
+                        <label for="active_no">No</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-chart-line"></i> Predict Risk
+        </button>
+    </form>
+</div>
+{% endblock %}

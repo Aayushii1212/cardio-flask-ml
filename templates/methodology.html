@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Methodology - CardioPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .methodology-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .methodology-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .methodology-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .methodology-section {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .methodology-section h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .methodology-section h3 {
+        color: var(--dark);
+        margin: 1.5rem 0 1rem 0;
+    }
+
+    .methodology-section p {
+        color: var(--gray);
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .code-block {
+        background: var(--dark);
+        color: #4ade80;
+        padding: 1.5rem;
+        border-radius: 10px;
+        font-family: 'Courier New', monospace;
+        overflow-x: auto;
+        margin: 1rem 0;
+    }
+
+    .feature-list {
+        background: var(--light);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+    }
+
+    .feature-list ul {
+        list-style-position: inside;
+        color: var(--gray);
+    }
+
+    .feature-list li {
+        padding: 0.5rem 0;
+    }
+
+    .metric-box {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    .metric-box .metric-value {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .metric-box .metric-label {
+        font-size: 1.1rem;
+    }
+
+    .process-steps {
+        counter-reset: step;
+    }
+
+    .process-step {
+        background: var(--light);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        position: relative;
+        padding-left: 4rem;
+    }
+
+    .process-step::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .process-step h4 {
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .process-step p {
+        color: var(--gray);
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .methodology-section {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="methodology-container">
+    <div class="methodology-header">
+        <h1><i class="fas fa-flask"></i> Methodology</h1>
+    </div>
+
+    <div class="methodology-section">
+        <h2><i class="fas fa-database"></i> Dataset</h2>
+        <p>
+            Our model is trained on a comprehensive cardiovascular disease dataset containing 70,000 patient records. 
+            After rigorous data cleaning and validation, we use 68,438 high-quality records for training and evaluation.
+        </p>
+        
+        <div class="feature-list">
+            <h3>Dataset Features (13 total):</h3>
+            <ul>
+                <li><strong>Age:</strong> Patient age in years</li>
+                <li><strong>Gender:</strong> Biological sex (1: Female, 2: Male)</li>
+                <li><strong>Height & Weight:</strong> Physical measurements for BMI calculation</li>
+                <li><strong>Blood Pressure:</strong> Systolic (ap_hi) and Diastolic (ap_lo)</li>
+                <li><strong>Cholesterol:</strong> 1: Normal, 2: Above normal, 3: Well above normal</li>
+                <li><strong>Glucose:</strong> 1: Normal, 2: Above normal, 3: Well above normal</li>
+                <li><strong>Lifestyle Factors:</strong> Smoking, alcohol consumption, physical activity</li>
+                <li><strong>Engineered Features:</strong> BMI, pulse pressure, height in meters</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="methodology-section">
+        <h2><i class="fas fa-filter"></i> Data Preprocessing</h2>
+        
+        <div class="process-steps">
+            <div class="process-step">
+                <h4>Data Cleaning</h4>
+                <p>Removed outliers and invalid entries (e.g., blood pressure values outside 90-250/60-200 mmHg range)</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Feature Engineering</h4>
+                <p>Created BMI, pulse pressure, and converted age from days to years</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Normalization</h4>
+                <p>Applied StandardScaler to numerical features for consistent scale</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Train-Test Split</h4>
+                <p>80-20 stratified split ensuring balanced class distribution</p>
+            </div>
+        </div>
+
+        <div class="code-block">
+# Feature Scaling
+scaler = StandardScaler()
+numerical_features = ['ageyears', 'heightm', 'weight', 
+                      'ap_hi', 'ap_lo', 'bmi', 'pulse_pressure']
+X_train[numerical_features] = scaler.fit_transform(X_train[numerical_features])
+        </div>
+    </div>
+
+    <div class="methodology-section">
+        <h2><i class="fas fa-brain"></i> Model Architecture</h2>
+        <p>
+            We tested multiple algorithms and selected <strong>XGBoost (Extreme Gradient Boosting)</strong> for its 
+            superior performance in binary classification tasks.
+        </p>
+
+        <h3>Why XGBoost?</h3>
+        <div class="feature-list">
+            <ul>
+                <li><strong>High Accuracy:</strong> Achieves 74.4% accuracy on test data</li>
+                <li><strong>Handles Complex Patterns:</strong> Captures non-linear relationships in health data</li>
+                <li><strong>Robust to Overfitting:</strong> Built-in regularization prevents overfitting</li>
+                <li><strong>Feature Importance:</strong> Provides insights into which factors matter most</li>
+                <li><strong>Fast Training:</strong> Efficient gradient boosting with parallel processing</li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+# XGBoost Configuration
+model = XGBClassifier(
+    n_estimators=500,      # Number of trees
+    learning_rate=0.03,    # Step size
+    max_depth=6,           # Tree depth
+    subsample=0.8,         # Sample ratio
+    colsample_bytree=0.8,  # Feature ratio
+    eval_metric='auc',     # Evaluation metric
+    tree_method="hist"     # Fast training
+)
+        </div>
+    </div>
+
+    <div class="methodology-section">
+        <h2><i class="fas fa-chart-line"></i> Model Performance</h2>
+        
+        <div class="metric-box">
+            <div class="metric-value">74.4%</div>
+            <div class="metric-label">Overall Accuracy</div>
+        </div>
+
+        <h3>Comparison with Other Algorithms:</h3>
+        <div class="feature-list">
+            <ul>
+                <li><strong>XGBoost:</strong> 74.4% (Selected Model)</li>
+                <li><strong>Random Forest:</strong> 74.3%</li>
+                <li><strong>Logistic Regression:</strong> 73.3%</li>
+            </ul>
+        </div>
+
+        <p>
+            The model demonstrates consistent performance across different patient demographics and health profiles, 
+            with particular strength in identifying high-risk individuals.
+        </p>
+    </div>
+
+    <div class="methodology-section">
+        <h2><i class="fas fa-cogs"></i> Prediction Process</h2>
+        
+        <div class="process-steps">
+            <div class="process-step">
+                <h4>Input Collection</h4>
+                <p>User provides 11 health parameters through the web interface</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Feature Engineering</h4>
+                <p>System automatically calculates BMI, pulse pressure, and converts units</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Scaling</h4>
+                <p>Numerical features are normalized using the fitted scaler</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Prediction</h4>
+                <p>XGBoost model processes the 13 features and outputs risk assessment</p>
+            </div>
+
+            <div class="process-step">
+                <h4>Risk Analysis</h4>
+                <p>System identifies specific risk factors and provides personalized recommendations</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="methodology-section">
+        <h2><i class="fas fa-shield-alt"></i> Limitations & Considerations</h2>
+        <p>
+            While our model achieves strong performance, it's important to understand its limitations:
+        </p>
+        <div class="feature-list">
+            <ul>
+                <li>Model accuracy of 74.4% means some predictions may be incorrect</li>
+                <li>Predictions are based on statistical patterns, not individual medical history</li>
+                <li>Model cannot account for genetic factors or family history</li>
+                <li>Should be used as a screening tool, not diagnostic instrument</li>
+                <li>Always consult healthcare professionals for medical decisions</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}CardioPredict - Heart Disease Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        color: var(--gray);
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: transform 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        color: var(--gray);
+        line-height: 1.6;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        padding: 2rem;
+        border-radius: 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .cta-section {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-section h2 {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+        color: var(--gray);
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+        }
+
+        .features {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1><i class="fas fa-heartbeat"></i> CardioPredict</h1>
+    <p>Advanced Machine Learning System for Cardiovascular Disease Risk Assessment</p>
+    <div class="hero-buttons">
+        <a href="/predict" class="btn btn-primary">
+            <i class="fas fa-chart-line"></i> Start Prediction
+        </a>
+        <a href="/analytics" class="btn btn-secondary">
+            <i class="fas fa-chart-bar"></i> View Analytics
+        </a>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-number">74.4%</div>
+        <div class="stat-label">Model Accuracy</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">68K+</div>
+        <div class="stat-label">Training Records</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">XGBoost</div>
+        <div class="stat-label">Algorithm Used</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">13</div>
+        <div class="stat-label">Health Features</div>
+    </div>
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-brain"></i>
+        </div>
+        <h3>AI-Powered Analysis</h3>
+        <p>Advanced XGBoost machine learning algorithm trained on 68,000+ patient records for accurate predictions.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Risk Assessment</h3>
+        <p>Comprehensive cardiovascular risk evaluation based on multiple health parameters and lifestyle factors.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Detailed Analytics</h3>
+        <p>Interactive visualizations and statistical insights into cardiovascular health patterns and trends.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-user-md"></i>
+        </div>
+        <h3>Personalized Results</h3>
+        <p>Tailored risk factors and recommendations based on your individual health profile and metrics.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <h3>Instant Results</h3>
+        <p>Get your cardiovascular risk assessment in seconds with confidence scores and detailed explanations.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <h3>Responsive Design</h3>
+        <p>Access from any device - desktop, tablet, or mobile - with a seamless user experience.</p>
+    </div>
+</div>
+
+<div class="cta-section">
+    <h2>Ready to Check Your Heart Health?</h2>
+    <p>Take the first step towards understanding your cardiovascular risk. Our AI-powered system provides instant, accurate assessments.</p>
+    <a href="/predict" class="btn btn-primary">
+        <i class="fas fa-heartbeat"></i> Get Started Now
+    </a>
+</div>
+{% endblock %}

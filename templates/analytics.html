@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - CardioPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .analytics-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .analytics-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .analytics-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card.primary .stat-icon {
+        color: var(--primary);
+    }
+
+    .stat-card.success .stat-icon {
+        color: var(--success);
+    }
+
+    .stat-card.danger .stat-icon {
+        color: var(--danger);
+    }
+
+    .stat-card.warning .stat-icon {
+        color: var(--warning);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--gray);
+        font-size: 1rem;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-card h3 {
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+
+    .insights-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+    }
+
+    .insights-section h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .insight-item {
+        background: var(--light);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+
+    .insight-item h4 {
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .insight-item p {
+        color: var(--gray);
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-header">
+    <h1><i class="fas fa-chart-bar"></i> Data Analytics Dashboard</h1>
+    <p>Comprehensive insights from 68,000+ cardiovascular health records</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-icon">
+            <i class="fas fa-database"></i>
+        </div>
+        <div class="stat-number">68,438</div>
+        <div class="stat-label">Total Records</div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-icon">
+            <i class="fas fa-heartbeat"></i>
+        </div>
+        <div class="stat-number">{{ stats.prediction_stats.high_risk }}</div>
+        <div class="stat-label">High Risk Predictions</div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="stat-number">{{ stats.prediction_stats.low_risk }}</div>
+        <div class="stat-label">Low Risk Predictions</div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-number">74.4%</div>
+        <div class="stat-label">Model Accuracy</div>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <div class="chart-card">
+        <h3><i class="fas fa-chart-pie"></i> Disease Distribution</h3>
+        <div class="chart-container">
+            <canvas id="diseaseChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3><i class="fas fa-chart-bar"></i> Age Distribution</h3>
+        <div class="chart-container">
+            <canvas id="ageChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3><i class="fas fa-chart-pie"></i> BMI Categories</h3>
+        <div class="chart-container">
+            <canvas id="bmiChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3><i class="fas fa-chart-bar"></i> Blood Pressure Status</h3>
+        <div class="chart-container">
+            <canvas id="bpChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3><i class="fas fa-chart-line"></i> Risk Factors Prevalence</h3>
+        <div class="chart-container">
+            <canvas id="riskFactorsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3><i class="fas fa-chart-area"></i> Cardio Risk by Age</h3>
+        <div class="chart-container">
+            <canvas id="ageRiskChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="insights-section">
+    <h2><i class="fas fa-lightbulb"></i> Key Insights</h2>
+    
+    <div class="insight-item">
+        <h4>📊 Age and Risk Correlation</h4>
+        <p>Cardiovascular disease risk increases significantly with age, showing the highest prevalence in individuals over 60 years old.</p>
+    </div>
+
+    <div class="insight-item">
+        <h4>🩺 Blood Pressure Impact</h4>
+        <p>Hypertension (high blood pressure) is one of the strongest predictors of cardiovascular disease, present in over 65% of positive cases.</p>
+    </div>
+
+    <div class="insight-item">
+        <h4>⚖️ BMI and Heart Health</h4>
+        <p>Individuals with BMI over 30 (obesity) show 2.5x higher risk of cardiovascular disease compared to those with normal BMI.</p>
+    </div>
+
+    <div class="insight-item">
+        <h4>🚬 Lifestyle Factors</h4>
+        <p>Smoking, alcohol consumption, and physical inactivity are significant modifiable risk factors that substantially increase disease risk.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Fetch analytics data
+    fetch('/api/analytics-data')
+        .then(response => response.json())
+        .then(data => {
+            createCharts(data);
+        });
+
+    function createCharts(data) {
+        // Disease Distribution Pie Chart
+        new Chart(document.getElementById('diseaseChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Healthy', 'Cardiovascular Disease'],
+                datasets: [{
+                    data: [34219, 34219],
+                    backgroundColor: ['#4ade80', '#f87171']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Age Distribution Bar Chart
+        const ageLabels = Object.keys(data.age_distribution);
+        const ageValues = Object.values(data.age_distribution);
+        
+        new Chart(document.getElementById('ageChart'), {
+            type: 'bar',
+            data: {
+                labels: ageLabels,
+                datasets: [{
+                    label: 'Number of Records',
+                    data: ageValues,
+                    backgroundColor: '#667eea'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // BMI Distribution Pie Chart
+        const bmiLabels = Object.keys(data.bmi_distribution);
+        const bmiValues = Object.values(data.bmi_distribution);
+        
+        new Chart(document.getElementById('bmiChart'), {
+            type: 'pie',
+            data: {
+                labels: bmiLabels,
+                datasets: [{
+                    data: bmiValues,
+                    backgroundColor: ['#60a5fa', '#4ade80', '#fbbf24', '#f87171']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Blood Pressure Chart
+        new Chart(document.getElementById('bpChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Normal BP', 'High BP'],
+                datasets: [{
+                    data: [data.bp_distribution.Normal, data.bp_distribution.High],
+                    backgroundColor: ['#4ade80', '#f87171']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Risk Factors Chart
+        new Chart(document.getElementById('riskFactorsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Smoking', 'Alcohol', 'Physical Inactivity'],
+                datasets: [{
+                    label: 'Number of Cases',
+                    data: [
+                        data.risk_factors.smoking,
+                        data.risk_factors.alcohol,
+                        data.risk_factors.inactive
+                    ],
+                    backgroundColor: ['#f87171', '#fbbf24', '#60a5fa']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Age vs Risk Line Chart
+        const ages = Object.keys(data.cardio_by_age).slice(40, 70);
+        const riskByAge = ages.map(age => data.cardio_by_age[age] * 100);
+        
+        new Chart(document.getElementById('ageRiskChart'), {
+            type: 'line',
+            data: {
+                labels: ages,
+                datasets: [{
+                    label: 'CVD Risk (%)',
+                    data: riskByAge,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - CardioPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .faq-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .faq-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .faq-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .faq-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+
+    .faq-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .category-btn {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .category-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--primary);
+    }
+
+    .category-btn i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .category-btn h3 {
+        color: var(--dark);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .faq-section {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 0;
+    }
+
+    .faq-item:last-child {
+        border-bottom: none;
+    }
+
+    .faq-question {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .faq-question h3 {
+        color: var(--dark);
+        font-size: 1.1rem;
+        margin: 0;
+        flex: 1;
+    }
+
+    .faq-question i {
+        color: var(--primary);
+        font-size: 1.5rem;
+        transition: transform 0.3s;
+    }
+
+    .faq-question.active i {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .faq-answer.active {
+        max-height: 500px;
+    }
+
+    .faq-answer p {
+        color: var(--gray);
+        line-height: 1.8;
+        margin-top: 1rem;
+        margin-bottom: 0;
+    }
+
+    .contact-cta {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .contact-cta h3 {
+        margin-bottom: 1rem;
+    }
+
+    .contact-cta p {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+        .faq-section {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="faq-container">
+    <div class="faq-header">
+        <h1><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
+        <p>Find answers to common questions about CardioPredict</p>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>What is CardioPredict?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    CardioPredict is an AI-powered cardiovascular disease risk assessment tool that uses machine learning 
+                    to analyze your health parameters and provide an estimate of your risk for cardiovascular disease. 
+                    It's trained on over 68,000 patient records and achieves 74.4% accuracy.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How accurate is the prediction?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    Our XGBoost model achieves 74.4% accuracy on test data. This means that out of 100 predictions, 
+                    approximately 74 are correct. While this is a strong performance, it's important to remember that 
+                    no prediction system is perfect, and results should be discussed with a healthcare professional.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Is this a replacement for medical diagnosis?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    No. CardioPredict is a screening and informational tool, not a medical diagnostic system. It cannot 
+                    replace professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare 
+                    professionals regarding any health concerns or before making decisions related to your health.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>What information do I need to provide?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    You'll need to provide: age, gender, height, weight, systolic and diastolic blood pressure, 
+                    cholesterol level, glucose level, and lifestyle factors (smoking, alcohol consumption, physical activity). 
+                    All this information is typically available from routine health check-ups.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How is my data used and stored?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    Your data is used only to generate your prediction and is not permanently stored or shared with third 
+                    parties. We collect anonymous statistics about prediction results to improve the service, but no 
+                    personally identifiable information is retained.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>What does "High Risk" mean?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    A "High Risk" prediction means that based on your health parameters, the AI model estimates you have 
+                    characteristics similar to individuals who have been diagnosed with cardiovascular disease. This is a 
+                    warning sign to take your heart health seriously and consult with a healthcare provider for proper 
+                    evaluation and guidance.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>What does "Low Risk" mean?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    A "Low Risk" prediction suggests that your current health parameters are similar to individuals without 
+                    cardiovascular disease. However, this doesn't guarantee you won't develop heart disease. Continue 
+                    maintaining healthy habits and regular health check-ups.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How was the model trained?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    The model was trained using the XGBoost algorithm on a dataset of 68,438 patient records. The data 
+                    includes various health parameters and confirmed cardiovascular disease status. We used an 80-20 
+                    train-test split and applied proper data preprocessing including feature engineering and normalization. 
+                    Visit our Methodology page for detailed information.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Can I use this if I'm pregnant?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    While you can use the tool, please note that pregnancy can significantly affect blood pressure and 
+                    other health parameters. The model was not specifically trained on pregnant individuals, so results 
+                    may not be as accurate. Always consult with your healthcare provider regarding heart health during 
+                    pregnancy.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>What should I do if I receive a "High Risk" result?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    If you receive a high-risk result, don't panic, but do take it seriously. Schedule an appointment 
+                    with your doctor for a comprehensive cardiovascular evaluation. They can perform additional tests, 
+                    review your medical history, and provide personalized recommendations. Consider lifestyle modifications 
+                    such as improving diet, increasing physical activity, quitting smoking, and managing stress.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How often should I check my risk?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    You can check your risk whenever your health parameters change or during routine health check-ups. 
+                    For most people, annual screening is sufficient. However, if you're actively working on improving 
+                    your health (losing weight, managing blood pressure, etc.), you might want to check more frequently 
+                    to track your progress.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Is the service free?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    Yes, CardioPredict is completely free to use. Our goal is to make cardiovascular risk assessment 
+                    accessible to everyone. There are no hidden fees or premium features.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Can I use this for someone else?</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>
+                    Yes, you can enter health parameters for family members or others (with their permission). However, 
+                    make sure you have accurate information for all required fields to ensure the prediction is as 
+                    accurate as possible.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-cta">
+        <h3><i class="fas fa-envelope"></i> Still Have Questions?</h3>
+        <p>If you couldn't find the answer you're looking for, feel free to reach out to us.</p>
+        <a href="/" class="btn btn-secondary" style="background: white; color: var(--primary);">
+            <i class="fas fa-home"></i> Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleFaq(element) {
+        const answer = element.nextElementSibling;
+        const isActive = answer.classList.contains('active');
+        
+        // Close all FAQs
+        document.querySelectorAll('.faq-answer').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelectorAll('.faq-question').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Open clicked FAQ if it wasn't active
+        if (!isActive) {
+            answer.classList.add('active');
+            element.classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

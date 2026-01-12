@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Results - CardioPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .result-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .result-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .result-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .prediction-badge {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+
+    .prediction-badge.high {
+        background: linear-gradient(135deg, #f87171, #ef4444);
+        color: white;
+    }
+
+    .prediction-badge.low {
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        color: white;
+    }
+
+    .prediction-badge h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .prediction-badge .confidence {
+        font-size: 1.5rem;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .metric-box {
+        background: var(--light);
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px solid var(--border);
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    .risk-factors {
+        margin: 2rem 0;
+    }
+
+    .risk-factors h3 {
+        color: var(--dark);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .risk-list {
+        list-style: none;
+    }
+
+    .risk-list li {
+        background: #fef2f2;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-left: 4px solid var(--danger);
+    }
+
+    .risk-list li i {
+        color: var(--danger);
+        font-size: 1.25rem;
+    }
+
+    .no-risk {
+        background: #f0fdf4;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--success);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .no-risk i {
+        font-size: 2rem;
+        color: var(--success);
+    }
+
+    .recommendations {
+        background: var(--light);
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 2rem 0;
+    }
+
+    .recommendations h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .recommendations ul {
+        list-style: none;
+    }
+
+    .recommendations li {
+        padding: 0.75rem 0;
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+    }
+
+    .recommendations li i {
+        color: var(--primary);
+        margin-top: 0.25rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .error-message {
+        background: #fef2f2;
+        padding: 2rem;
+        border-radius: 15px;
+        border-left: 4px solid var(--danger);
+        color: var(--danger);
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .result-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .prediction-badge h2 {
+            font-size: 1.5rem;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="result-header">
+        <h1><i class="fas fa-clipboard-check"></i> Your Results</h1>
+    </div>
+
+    {% if error %}
+    <div class="result-card">
+        <div class="error-message">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <h2>Error Processing Your Data</h2>
+            <p>{{ prediction }}</p>
+            <div style="margin-top: 1rem;">
+                <a href="/predict" class="btn btn-primary">Try Again</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="result-card">
+        <div class="prediction-badge {{ risk_level }}">
+            <h2>{{ prediction }}</h2>
+            {% if confidence %}
+            <div class="confidence">
+                <i class="fas fa-chart-line"></i> Confidence: {{ confidence }}%
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-value">{{ bmi }}</div>
+                <div class="metric-label">Body Mass Index</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">{{ confidence }}%</div>
+                <div class="metric-label">Model Confidence</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">{{ risk_factors|length if risk_factors else 0 }}</div>
+                <div class="metric-label">Risk Factors</div>
+            </div>
+        </div>
+
+        <div class="risk-factors">
+            <h3><i class="fas fa-exclamation-circle"></i> Identified Risk Factors</h3>
+            {% if risk_factors %}
+            <ul class="risk-list">
+                {% for factor in risk_factors %}
+                <li>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ factor }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="no-risk">
+                <i class="fas fa-check-circle"></i>
+                <p style="margin: 0;">No major risk factors detected. Keep maintaining your healthy lifestyle!</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="recommendations">
+            <h3><i class="fas fa-lightbulb"></i> Recommendations</h3>
+            <ul>
+                {% if risk_level == 'high' %}
+                <li><i class="fas fa-check"></i> <span>Consult with a healthcare professional for proper evaluation</span></li>
+                <li><i class="fas fa-check"></i> <span>Monitor your blood pressure regularly</span></li>
+                <li><i class="fas fa-check"></i> <span>Adopt a heart-healthy diet low in sodium and saturated fats</span></li>
+                <li><i class="fas fa-check"></i> <span>Engage in regular physical activity (150 minutes per week)</span></li>
+                <li><i class="fas fa-check"></i> <span>Manage stress through relaxation techniques</span></li>
+                <li><i class="fas fa-check"></i> <span>Quit smoking and limit alcohol consumption</span></li>
+                {% else %}
+                <li><i class="fas fa-check"></i> <span>Maintain your current healthy lifestyle</span></li>
+                <li><i class="fas fa-check"></i> <span>Continue regular physical activity</span></li>
+                <li><i class="fas fa-check"></i> <span>Keep monitoring your health metrics</span></li>
+                <li><i class="fas fa-check"></i> <span>Schedule regular check-ups with your doctor</span></li>
+                <li><i class="fas fa-check"></i> <span>Maintain a balanced, nutritious diet</span></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div style="background: #fef3c7; padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--warning); margin-top: 2rem;">
+            <p style="margin: 0;"><strong>⚠️ Important:</strong> This is a predictive tool and should not replace professional medical advice. Always consult with healthcare professionals for proper diagnosis and treatment.</p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/predict" class="btn btn-primary">
+                <i class="fas fa-redo"></i> New Prediction
+            </a>
+            <a href="/analytics" class="btn btn-secondary">
+                <i class="fas fa-chart-bar"></i> View Analytics
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
