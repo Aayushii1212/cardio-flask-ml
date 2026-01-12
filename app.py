@@ -5,6 +5,12 @@ import pandas as pd
 import json
 import os
 
+def load_dataframe():
+    return pd.read_csv(
+        os.path.join(BASE_DIR, "cardio_train.csv"),
+        sep=";"
+    )
+
 # =========================
 # APP SETUP
 # =========================
@@ -20,10 +26,10 @@ model = joblib.load(os.path.join(BASE_DIR, "cardio_model.pkl"))
 scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
 
 # FIXED: relative CSV path (DEPLOYMENT SAFE)
-df = pd.read_csv(
-    os.path.join(BASE_DIR, "cardio_train.csv"),
-    sep=";"
-)
+# df = pd.read_csv(
+#     os.path.join(BASE_DIR, "cardio_train.csv"),
+#     sep=";"
+# )
 
 # =========================
 # FEATURE CONFIGURATION
@@ -69,6 +75,8 @@ def faq():
 
 @app.route("/analytics")
 def analytics():
+    df = load_dataframe()
+
     stats = {
         'total_records': len(df),
         'cardio_positive': int(df['cardio'].sum()),
@@ -80,8 +88,10 @@ def analytics():
     }
     return render_template("analytics.html", stats=stats)
 
+
 @app.route("/api/analytics-data")
 def get_analytics_data():
+    df=load_dataframe()
     df['ageyears'] = (df['age'] / 365).astype(int)
 
     age_groups = pd.cut(
